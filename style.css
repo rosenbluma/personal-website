@@ -7,55 +7,47 @@ body {
     color: #333; /* Default dark text color */
 }
 
-/* Light Mode */
+/* Color Themes Follow Below */
 body.white {
     background-color: #ffffff;
     color: #000000;
 }
 
-/* Dark Mode */
 body.black {
     background-color: #000000;
     color: #ffffff;
 }
 
-/* Retro Theme */
 body.pink {
     background-color: #FF69B4;
     color: #ffffff;
 }
 
-/* Ocean Theme */
 body.blue {
     background-color: #87CEFA;
     color: #ffffff;
 }
 
-/* Forest Theme */
 body.purple {
     background-color: #8A2BE2;
     color: #ffffff;
 }
 
-/* Sunset Theme */
 body.red {
     background-color: #FF4500;
     color: #ffffff;
 }
 
-/* Mint Theme */
 body.yellow {
     background-color: #eb4d4d;
     color: #ffffff;
 }
 
-/* Berry Theme */
 body.green {
     background-color: #596d32;
     color: #ffffff;
 }
 
-/* Lava Theme */
 body.orange {
     background-color: #f48b41;
     color: #ffffff;
@@ -117,21 +109,41 @@ ul li {
 .tracker .run { background-color: #FF9800; } /* Orange for run */
 .tracker .both { background-color: #03A9F4; } /* Blue for both */
 
+/* Tracker Container with Labels */
+.tracker-container {
+    display: flex;
+    align-items: center;
+}
+
+/* Y-axis labels */
+.y-axis-labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(12px * 7 + 4px * 6); /* Match tracker grid height */
+    margin-right: 8px;
+    font-size: 0.8rem;
+    text-align: right;
+    color: #777;
+    transform: translateY(-6px); /* Adjust the value as needed */
+
+}
+
 /* Theme Grid */
 #theme-grid {
     position: fixed;
     top: 15px;
     left: 15px;
     display: grid;
-    grid-template-columns: repeat(3, 20px); /* Smaller columns */
-    grid-template-rows: repeat(3, 20px);    /* Smaller rows */
+    grid-template-columns: repeat(3, 20px); 
+    grid-template-rows: repeat(3, 20px);    
     gap: 0; /* No gaps between blocks */
     z-index: 1000;
 }
 
 .theme-node {
-    width: 20px; /* Half the original width */
-    height: 20px; /* Half the original height */
+    width: 20px; 
+    height: 20px; 
     cursor: pointer;
 }
 
