@@ -1,0 +1,148 @@
+/* Base Styles */
+body {
+    margin: 0;
+    font-family: 'Palatino';
+    line-height: 1.8;
+    transition: background-color 0.3s, color 0.3s;
+    color: #333; /* Default dark text color */
+}
+
+/* Light Mode */
+body.white {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Dark Mode */
+body.black {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+/* Retro Theme */
+body.pink {
+    background-color: #FF69B4;
+    color: #ffffff;
+}
+
+/* Ocean Theme */
+body.blue {
+    background-color: #87CEFA;
+    color: #ffffff;
+}
+
+/* Forest Theme */
+body.purple {
+    background-color: #8A2BE2;
+    color: #ffffff;
+}
+
+/* Sunset Theme */
+body.red {
+    background-color: #FF4500;
+    color: #ffffff;
+}
+
+/* Mint Theme */
+body.yellow {
+    background-color: #eb4d4d;
+    color: #ffffff;
+}
+
+/* Berry Theme */
+body.green {
+    background-color: #596d32;
+    color: #ffffff;
+}
+
+/* Lava Theme */
+body.orange {
+    background-color: #f48b41;
+    color: #ffffff;
+}
+
+/* Page Container */
+.container {
+    max-width: 800px; /* Keep text content neatly in the middle */
+    margin: 0 auto;
+    padding: 10px;
+}
+
+/* Header */
+h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: inherit;
+    text-align: center; /* Center align headers */
+}
+
+p, ul {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    text-align: justify; /* Classy justified text */
+    line-height: 1.8;
+}
+
+/* Unordered List Styling */
+ul {
+    padding-left: 20px; /* Indent list items */
+}
+
+ul li {
+    margin-bottom: 10px;
+}
+
+/* Fitness Tracker */
+.tracker {
+    display: grid;
+    grid-template-columns: repeat(52, 12px); /* 52 weeks */
+    gap: 2px;
+    margin: 20px auto;
+    width: fit-content;
+}
+
+.tracker .day {
+    width: 12px;
+    height: 12px;
+    background-color: #e0e0e0; /* Default color */
+    border-radius: 2px;
+    transition: transform 0.3s ease;
+}
+
+.tracker .day:hover {
+    transform: scale(1.2); /* Enlarge on hover */
+}
+
+.tracker .lift { background-color: #4CAF50; } /* Green for lift */
+.tracker .run { background-color: #FF9800; } /* Orange for run */
+.tracker .both { background-color: #03A9F4; } /* Blue for both */
+
+/* Theme Grid */
+#theme-grid {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    display: grid;
+    grid-template-columns: repeat(3, 20px); /* Smaller columns */
+    grid-template-rows: repeat(3, 20px);    /* Smaller rows */
+    gap: 0; /* No gaps between blocks */
+    z-index: 1000;
+}
+
+.theme-node {
+    width: 20px; /* Half the original width */
+    height: 20px; /* Half the original height */
+    cursor: pointer;
+}
+
+
+/* Specific Colors for Theme Nodes */
+.white-theme { background-color: #ffffff; }
+.black-theme { background-color: #000000; }     
+.pink-theme { background-color: #FF69B4; } 
+.blue-theme { background-color: #87CEFA; }  
+.purple-theme { background-color: #8A2BE2; } 
+.red-theme { background-color: #FF4500; } 
+.yellow-theme { background-color: #eb4d4d; }   
+.green-theme { background-color: #596d32; }  
+.orange-theme { background-color: #f48b41; }   
