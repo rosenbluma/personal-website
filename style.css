@@ -1,13 +1,23 @@
-/* Base Styles */
+/* 
+    Base Styles 
+    -----------
+    Setting global styles for the body and default text colors.
+    Including a font family and a line-height for better readability.
+*/
 body {
     margin: 0;
-    font-family: 'Palatino';
+    font-family: 'Palatino'; /* A serif font for a classic look */
     line-height: 1.8;
-    transition: background-color 0.3s, color 0.3s;
-    color: #333; /* Default dark text color */
+    transition: background-color 0.3s, color 0.3s; /* Smooth theme transitions */
+    color: #333; /* Default dark text color for white theme */
 }
 
-/* Color Themes Follow Below */
+/* 
+    Color Themes 
+    ------------
+    Each theme class sets a background and text color for the body element.
+    Used by the JavaScript theme switcher.
+*/
 body.white {
     background-color: #ffffff;
     color: #000000;
@@ -53,106 +63,245 @@ body.orange {
     color: #ffffff;
 }
 
-/* Page Container */
+/* 
+    Page Container 
+    --------------
+    Centers the main content and sets a max-width for better readability.
+*/
 .container {
-    max-width: 800px; /* Keep text content neatly in the middle */
-    margin: 0 auto;
+    max-width: 800px; 
+    margin: 0 auto; 
     padding: 10px;
 }
 
-/* Header */
+/* 
+    Headers 
+    -------
+    A larger font size for h2 and centering the text.
+*/
 h2 {
     font-size: 1.8rem;
     margin-bottom: 15px;
-    color: inherit;
-    text-align: center; /* Center align headers */
+    color: inherit;    /* Inherit color from body, allowing theme changes */
+    text-align: center;
 }
 
+/* 
+    Text Elements (Paragraphs and Lists)
+    ------------------------------------
+    Set a comfortable font size and justify text for a neat, book-like appearance.
+*/
 p, ul {
     font-size: 1rem;
     margin-bottom: 20px;
-    text-align: justify; /* Classy justified text */
+    text-align: justify; 
     line-height: 1.8;
 }
 
-/* Unordered List Styling */
+/* 
+    Unordered List Styling 
+    ----------------------
+    Add some indentation for list items.
+*/
 ul {
-    padding-left: 20px; /* Indent list items */
+    padding-left: 20px; 
 }
 
 ul li {
     margin-bottom: 10px;
 }
 
-/* Fitness Tracker */
+/* 
+    Fitness Tracker 
+    ---------------
+    .tracker uses a grid layout to display 52 weeks (columns) of activity data.
+    Each column has 12px width (with some gaps) and each day is represented as a pixel-like square.
+*/
 .tracker {
     display: grid;
-    grid-template-columns: repeat(52, 12px); /* 52 weeks */
-    gap: 2px;
-    margin: 20px auto;
-    width: fit-content;
+    grid-template-columns: repeat(52, 12px); /* 52 columns, one per week */
+    gap: 2px; /* Small gap between 'pixels' */
+    margin: 20px auto; /* Center tracker horizontally */
+    width: fit-content; /* Adjust width to content */
 }
 
+/* 
+    Individual Day Cells 
+    ---------------------
+    Each day is an 11x11 pixel, rounded corners, default gray.
+    On hover, we scale it up a bit to make it stand out.
+*/
 .tracker .day {
-    width: 12px;
-    height: 12px;
-    background-color: #e0e0e0; /* Default color */
+    width: 11px;
+    height: 11px;
+    background-color: #e0e0e0; 
     border-radius: 2px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease; /* Smooth scale transition */
+    position: relative; /* Necessary for tooltip positioning */
 }
 
 .tracker .day:hover {
-    transform: scale(1.2); /* Enlarge on hover */
+    transition: transform 0.001s ease-in-out; 
+    transform: scale(1.3); /* Slight enlargement on hover */
 }
 
-.tracker .lift { background-color: #4CAF50; } /* Green for lift */
-.tracker .run { background-color: #FF9800; } /* Orange for run */
-.tracker .both { background-color: #03A9F4; } /* Blue for both */
+/* 
+    Tooltip Styling 
+    ---------------
+    On hover, display a tooltip with activity details.
+    Positioned above the pixel, centered horizontally.
+    Uses pseudo-elements ::after and ::before:
+    - ::after for the tooltip box
+    - ::before for the tooltip arrow
+*/
+.tracker .day[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 1.0);
+    color: #fff;
+    padding: 5px;
+    border-radius: 2px;
+    font-size: 0.65rem;
+    white-space: nowrap; /* Keep tooltip on a single line */
+    z-index: 1000;
+    pointer-events: none; /* Tooltips are not interactive */
+}
 
-/* Tracker Container with Labels */
+.tracker .day[title]:hover::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-45%); /* Slight offset for arrow */
+    border-width: 5px;
+    border-style: solid;
+    /* Arrow pointing down from the tooltip box */
+    border-color: rgba(0, 0, 0, 0.75) transparent transparent transparent;
+    z-index: 999;
+}
+
+/* 
+    Activity Colors 
+    ---------------
+    Assign distinct background colors for each type of activity.
+    For multi activities, we use a gradient defined with CSS variables.
+*/
+.tracker .lift {
+    background-color: #87CEFA;
+}
+
+.tracker .bike {
+    background-color: #03A9F4;
+}
+
+.tracker .pickleball {
+    background-color: #006666;
+}
+
+.tracker .tennis {
+    background-color: #9C27B0;
+}
+
+.tracker .run {
+    background-color: #1E90FF;
+}
+
+/* 
+    Multi-Activity Days 
+    -------------------
+    For days with more than one activity, we split the pixel:
+    Left half is one color, right half another.
+    Uses a linear gradient with custom CSS properties set in JS.
+*/
+.tracker .multi {
+    background: linear-gradient(
+        to right, 
+        var(--left-color, #d3d3d3) 50%, 
+        var(--right-color, #d3d3d3) 50%
+    );
+}
+
+.tracker .hike {
+    background-color: #8B0000;
+}
+
+.tracker .surfing {
+    background-color: #4169E1;
+}
+
+.tracker .workout {
+    background-color: #9370DB;
+}
+
+/* 
+    Tracker Container 
+    -----------------
+    Used to position tracker and possibly other related elements.
+*/
 .tracker-container {
     display: flex;
-    align-items: center;
+    align-items: center; /* Center the grid vertically if needed */
 }
 
-/* Y-axis labels */
-.y-axis-labels {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: calc(12px * 7 + 4px * 6); /* Match tracker grid height */
-    margin-right: 8px;
-    font-size: 0.8rem;
-    text-align: right;
-    color: #000000;
-    transform: translateY(-6px); /* Adjust the value as needed */
-}
-/* Y-axis white text for dark mode */
-body.black .y-axis-labels {
-    color: #ffffff; /* White text in dark mode */
+/* 
+    Contributions Summary 
+    ---------------------
+    Similar to GitHub's contribution summary message.
+    Changes color based on the current theme.
+*/
+.contributions-summary {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #24292f; /* Dark text by default */
+    margin-bottom: 10px;
+    text-align: left;
 }
 
+/* In dark themes, invert the text color */
+body.black .contributions-summary,
+body.pink .contributions-summary,
+body.blue .contributions-summary,
+body.purple .contributions-summary,
+body.red .contributions-summary,
+body.yellow .contributions-summary,
+body.green .contributions-summary,
+body.orange .contributions-summary {
+    color: #ffffff;
+}
 
-/* Theme Grid */
+/* 
+    Theme Grid 
+    ----------
+    A small fixed grid of color blocks in the top-left corner.
+    Clicking these changes the theme.
+*/
 #theme-grid {
     position: fixed;
     top: 15px;
     left: 15px;
     display: grid;
     grid-template-columns: repeat(3, 20px); 
-    grid-template-rows: repeat(3, 20px);    
-    gap: 0; /* No gaps between blocks */
-    z-index: 1000;
+    grid-template-rows: repeat(3, 20px);
+    gap: 0; 
+    z-index: 1000; /* Ensure the theme grid is always on top */
 }
 
+/* Each theme-node is a clickable square that changes theme */
 .theme-node {
     width: 20px; 
     height: 20px; 
     cursor: pointer;
 }
 
-
-/* Specific Colors for Theme Nodes */
+/* 
+    Specific Colors for Theme Nodes 
+    -------------------------------
+    Each node visually represents the theme it sets.
+*/
 .white-theme { background-color: #ffffff; }
 .black-theme { background-color: #000000; }     
 .pink-theme { background-color: #FF69B4; } 
@@ -161,4 +310,4 @@ body.black .y-axis-labels {
 .red-theme { background-color: #FF4500; } 
 .yellow-theme { background-color: #eb4d4d; }   
 .green-theme { background-color: #596d32; }  
-.orange-theme { background-color: #f48b41; }   
+.orange-theme { background-color: #f48b41; }
