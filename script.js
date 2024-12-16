@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const body = document.body;
     const tracker = document.querySelector('.tracker');
     const themeNodes = document.querySelectorAll('.theme-node');
+    
 
     // Load the saved theme from localStorage
     const savedTheme = localStorage.getItem('theme') || 'white';

@@ -124,10 +124,14 @@ ul li {
     margin-right: 8px;
     font-size: 0.8rem;
     text-align: right;
-    color: #777;
+    color: #000000;
     transform: translateY(-6px); /* Adjust the value as needed */
-
 }
+/* Y-axis white text for dark mode */
+body.black .y-axis-labels {
+    color: #ffffff; /* White text in dark mode */
+}
+
 
 /* Theme Grid */
 #theme-grid {
