@@ -165,8 +165,11 @@ h2 {
 .contributions-summary {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     font-size: 14px;
-    color: #24292f;
+    color: #000000;
     margin-bottom: 10px;
+}
+.content-wrapper.black .contributions-summary {
+    color: #ffffff; /* White text for black background */
 }
 
 /* 
