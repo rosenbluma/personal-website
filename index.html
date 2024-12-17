@@ -1,131 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- 
-        Setting the character encoding to UTF-8 ensures that the page 
-        can handle a wide variety of characters from different languages.
-    -->
+    <!-- Character encoding for better compatibility -->
     <meta charset="UTF-8">
-
-    <!-- 
-        Setting the viewport meta tag makes the website responsive on mobile devices.
-        The initial-scale=1.0 sets the initial zoom level when the page is first loaded.
-    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- 
-        Title of the webpage, displayed in browser tabs and search engine results.
-    -->
     <title>Adam Rosenblum's Personal Website</title>
 
-    <!-- 
-        Linking to the external stylesheet for the visual design. 
-        Make sure 'style.css' is properly located in the same directory.
-    -->
+    <!-- Link to external CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="white">
-    <!-- 
-        3x3 Pixel Theme Grid: 
-        This grid allows the user to switch between different color themes (modes).
-        Each .theme-node has a data-theme attribute that corresponds to a class on the <body>.
-        The theme switching logic is handled by JavaScript in script.js.
-    -->
-    <div id="theme-grid">
-        <!-- Each square is a clickable element that changes the website theme -->
-        <div class="theme-node white-theme" data-theme="white" title="White Mode"></div>
-        <div class="theme-node black-theme" data-theme="black" title="Black Mode"></div>
-        <div class="theme-node pink-theme" data-theme="pink" title="Pink Mode"></div>
-        <div class="theme-node blue-theme" data-theme="blue" title="Blue Mode"></div>
-        <div class="theme-node purple-theme" data-theme="purple" title="Purple Mode"></div>
-        <div class="theme-node red-theme" data-theme="red" title="Red Mode"></div>
-        <div class="theme-node yellow-theme" data-theme="yellow" title="Yellow Mode"></div>
-        <div class="theme-node green-theme" data-theme="green" title="Green Mode"></div>
-        <div class="theme-node orange-theme" data-theme="orange" title="Orange Mode"></div>
+    <!-- Content Wrapper with Black Border -->
+    <div class="content-wrapper">
+        <!-- Theme Grid -->
+        <div id="theme-grid">
+            <div class="theme-node white-theme" data-theme="white" title="White Mode"></div>
+            <div class="theme-node black-theme" data-theme="black" title="Black Mode"></div>
+            <div class="theme-node pink-theme" data-theme="pink" title="Pink Mode"></div>
+            <div class="theme-node blue-theme" data-theme="blue" title="Blue Mode"></div>
+            <div class="theme-node purple-theme" data-theme="purple" title="Purple Mode"></div>
+            <div class="theme-node red-theme" data-theme="red" title="Red Mode"></div>
+            <div class="theme-node yellow-theme" data-theme="yellow" title="Yellow Mode"></div>
+            <div class="theme-node green-theme" data-theme="green" title="Green Mode"></div>
+            <div class="theme-node orange-theme" data-theme="orange" title="Orange Mode"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container">
+            <!-- About Section -->
+            <section id="about">
+                <h2>About Me</h2>
+                <p>Hi, my name is Adam and I'm a sophomore at Berkeley.</p>
+                <p>I study data science + cognitive science in school.</p>
+                <p>I like to read books, work on new projects, and play sports in my free time.</p>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects">
+                <h2>Side Projects</h2>
+                <p>Here are some of the projects I've been working on.</p>
+                <p>Berkeley Sublet was my first coding project and where I learned all the basics of web design. I thought a big project was the best way to go about learning code + web design, so check that out.</p>
+                <p>Picture is the temporary name for a platform I've been making to manage my biometric data exactly as I want. The goal is beautiful visualizations and a better understanding of the biometric data recorded from my Garmin and Oura.</p>
+                <ul>
+                    <li>
+                        <strong>
+                            <a href="https://berkeleysublet.com" target="_blank" rel="noopener noreferrer">
+                                Berkeley Sublet
+                            </a>
+                        </strong>: A subletting platform for students.
+                    </li>
+                    <li>
+                        <strong>
+                            <a href="https://www.youtube.com/watch?v=okueA9dFcnc" target="_blank" rel="noopener noreferrer">
+                                Picture
+                            </a>
+                        </strong>: Integrating biometric data from multiple trackers.
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Fitness Tracker Section -->
+            <section id="fitness-tracker">
+                <h2>My Fitness Graph (via Strava)</h2>
+                <div class="contributions-summary">
+                    <span class="contributions-count">0 contributions in the last year</span>
+                </div>
+
+                <!-- Wrapper for the graph and doodle -->
+                <div class="tracker-wrapper">
+                    <div class="tracker-container">
+                        <div class="tracker"></div>
+                    </div>
+                    <!-- Permanent Doodle Overlay -->
+                    <div class="doodle-overlay">
+                        <img src="doodle.png" alt="Permanent Doodle">
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 
-    <!-- 
-        Main container for the page content. 
-        max-width and centering is handled in style.css for a neat layout.
-    -->
-    <div class="container">
-
-        <!-- About Section -->
-        <section id="about">
-            <h2>About Me</h2>
-            <!-- 
-                Introduces the page author. 
-                Using paragraphs for readability.
-                Consider adding more details for personality or experience.
-            -->
-            <p>Hi, my name is Adam and I'm a sophomore at Berkeley.</p>
-            <p>I study data science + cognitive science in school.</p>
-            <p>I like to read books, work on new projects, and play sports in my free time.</p>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects">
-            <h2>Side Projects</h2>
-            <!-- 
-                Brief overview of personal projects.
-                Using a combination of paragraphs and a bullet list for clarity.
-            -->
-            <p>Here are some of the projects I've been working on.</p>
-            <p>Berkeley Sublet was my first coding project and where I learned all the basics of web design. I thought a big project was the best way to go about learning code + web design, so check that out.</p>
-            <p>Picture is the temporary name for a platform I've been making to manage my biometric data exactly as I want. The goal is beautiful visualizations and a better understanding of the biometric data recorded from my Garmin and Oura.</p>
-
-            <!-- 
-                List of projects with links. 
-                'rel="noopener noreferrer"' is a security best practice when using target="_blank".
-                It prevents the new page from accessing the window.opener object.
-            -->
-            <ul>
-                <li>
-                    <strong>
-                        <a href="https://berkeleysublet.com" target="_blank" rel="noopener noreferrer">
-                            Berkeley Sublet
-                        </a>
-                    </strong>: A subletting platform for students.
-                </li>
-                <li>
-                    <strong>
-                        <a href="https://www.youtube.com/watch?v=okueA9dFcnc" target="_blank" rel="noopener noreferrer">
-                            Picture
-                        </a>
-                    </strong>: Integrating biometric data from multiple trackers.
-                </li>
-            </ul>
-        </section>
-
-        <!-- Fitness Tracker Section -->
-        <section id="fitness-tracker">
-            <h2>Strava + Garmin</h2>
-            <!-- 
-                Contributions summary similar to GitHub's contribution graph.
-                The .contributions-count is updated dynamically by script.js 
-                after fetching data from Strava.
-            -->
-            <div class="contributions-summary">
-                <span class="contributions-count">0 contributions in the last year</span>
-            </div>
-
-            <!--
-                Tracker container holds the actual activity grid (.tracker).
-                The grid is dynamically populated by script.js with activity data.
-            -->
-            <div class="tracker-container">
-                <div class="tracker"></div>
-            </div>
-        </section>
-    </div>
-
-    <!-- 
-        Linking the main JavaScript file that handles:
-        - Theme switching
-        - Fetching Strava activities
-        - Populating the fitness tracker
-        Make sure 'script.js' is in the same directory or adjust the path.
-    -->
+    <!-- Link to external JS -->
     <script src="script.js"></script>
 </body>
 </html>
