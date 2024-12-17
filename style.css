@@ -11,6 +11,7 @@ body {
     background-color: #f8f8f8; /* Neutral page background */
 }
 
+
 /* 
     Content Wrapper 
     ---------------
@@ -195,6 +196,34 @@ h2 {
 .doodle-overlay img {
     width: 100%;
     height: auto;
+}
+/* Activity Key Styling */
+#activity-key {
+    display: grid; /* Use grid layout for dense alignment */
+    grid-template-columns: auto 1fr; /* Small box + text */
+    gap: 2px 15px; /* Small gaps between rows and columns */
+    align-items: center; /* Vertically center align items */
+    justify-items: start; /* Align content to the left */
+    position: absolute; /* Position relative to tracker */
+    top: 0; /* Align to top of graph */
+    right: -200px; /* Push to the right of graph */
+    width: 150px; /* Fixed width */
+    padding: 10px;
+    border-radius: 8px; /* Rounded edges */
+    font-size: 0.9rem; /* Slightly smaller text */
+}
+
+/* Individual Key Items */
+.key-item {
+    display: flex;
+    align-items: center;
+}
+
+.key-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px; /* Rounded corners */
+    margin-right: 10px;
 }
 
 /* 

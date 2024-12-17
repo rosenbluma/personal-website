@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const contributionsCountElement = document.querySelector('.contributions-count');
     const themeNodes = document.querySelectorAll('.theme-node');
     const contentWrapper = document.querySelector('.content-wrapper');
+    const activityKeyContainer = document.getElementById('activity-key'); // For the key
 
     const clientId = '142816';
     const clientSecret = '3af96ad67eaabcb268b8dd0a8cd4623ce0b00646';
@@ -13,6 +14,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     const totalWeeks = 52;
     const daysPerWeek = 7;
+
+    const activityColors = {
+        WeightTraining: '#87CEFA',
+        Ride: '#03A9F4',
+        Pickleball: '#006666',
+        Tennis: '#9C27B0',
+        Run: '#1E90FF',
+        Hike: '#8B0000',
+        Surfing: '#4169E1',
+        Workout: '#9370DB',
+    };
+
+    const activityDisplayNames = {
+        WeightTraining: 'Lifting',
+        Ride: 'Cycling',
+        Pickleball: 'Pickleball',
+        Tennis: 'Tennis',
+        Run: 'Running',
+        Hike: 'Hiking',
+        Surfing: 'Surfing',
+        Workout: 'Ultimate',
+    };
 
     // Set theme dynamically
     function setTheme(theme) {
@@ -61,20 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Populate fitness graph with activity data
     function populateFitnessGraph(activities) {
-        const activityColors = {
-            WeightTraining: '#87CEFA',
-            Ride: '#03A9F4',
-            Pickleball: '#006666',
-            Tennis: '#9C27B0',
-            Run: '#1E90FF',
-            Hike: '#8B0000',
-            Surfing: '#4169E1',
-            Workout: '#9370DB',
-        };
-
         const dayMap = {};
 
-        // Map activities to dates and store as arrays for multi-activity days
         activities.forEach(activity => {
             const date = new Date(activity.start_date).toISOString().split('T')[0];
             const color = activityColors[activity.sport_type || 'unknown'] || '#d3d3d3';
@@ -103,12 +114,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (dayMap[dateString]) {
                     const activities = dayMap[dateString];
                     if (activities.length === 1) {
-                        // Single activity
                         const { color, name, duration } = activities[0];
                         cell.style.backgroundColor = color;
                         cell.setAttribute('title', `${name} - ${duration}`);
                     } else {
-                        // Multi-activity: apply gradient and combine tooltips
                         const leftColor = activities[0].color;
                         const rightColor = activities[1].color;
                         cell.style.background = `linear-gradient(to right, ${leftColor} 50%, ${rightColor} 50%)`;
@@ -125,6 +134,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+
+    // Generate Activity Key dynamically
+function generateActivityKey() {
+    const activityKeyContainer = document.getElementById('activity-key');
+    activityKeyContainer.innerHTML = ''; // Clear any previous content
+
+    // Loop through the activity colors and use display names
+    Object.entries(activityColors).forEach(([activity, color]) => {
+        const keyItem = document.createElement('div');
+        keyItem.classList.add('key-item');
+
+        const colorBox = document.createElement('div');
+        colorBox.classList.add('key-color');
+        colorBox.style.backgroundColor = color;
+
+        const label = document.createElement('span');
+        label.textContent = activityDisplayNames[activity] || activity; // Use display name if available
+
+        keyItem.appendChild(colorBox);
+        keyItem.appendChild(label);
+        activityKeyContainer.appendChild(keyItem);
+    });
+}
+    
 
     // Fetch Strava data
     async function fetchStravaActivities() {
@@ -153,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             contributionsCountElement.textContent = `${allActivities.length} contributions in the last year`;
             populateFitnessGraph(allActivities);
+            generateActivityKey();
         } catch (error) {
             console.error('Error fetching activities:', error);
         }
