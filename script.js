@@ -159,38 +159,42 @@ function generateActivityKey() {
 }
     
 
-    // Fetch Strava data
-    async function fetchStravaActivities() {
-        const oneYearAgo = new Date();
-        oneYearAgo.setDate(oneYearAgo.getDate() - 365);
+async function fetchStravaActivities() {
+    const oneYearAgo = new Date();
+    oneYearAgo.setDate(oneYearAgo.getDate() - 365);
 
-        if (Date.now() / 1000 >= tokenExpiresAt) await refreshAccessToken();
+    if (Date.now() / 1000 >= tokenExpiresAt) await refreshAccessToken();
 
-        let allActivities = [];
-        let page = 1;
+    const perPage = 200;
+    const oneYearAgoEpoch = Math.floor(oneYearAgo.getTime() / 1000);
+    const nowEpoch = Math.floor(Date.now() / 1000);
 
-        try {
-            while (true) {
-                const response = await fetch(
-                    `https://www.strava.com/api/v3/athlete/activities?page=${page}&per_page=200`,
-                    { headers: { Authorization: `Bearer ${accessToken}` } }
-                );
+    try {
+        const fetchPromises = Array.from({ length: 5 }, (_, i) =>
+            fetch(
+                `https://www.strava.com/api/v3/athlete/activities?page=${i + 1}&per_page=${perPage}&after=${oneYearAgoEpoch}&before=${nowEpoch}`,
+                { headers: { Authorization: `Bearer ${accessToken}` } }
+            ).then(response => {
+                if (!response.ok) throw new Error(`Error fetching page ${i + 1}`);
+                return response.json();
+            })
+        );
 
-                if (!response.ok) throw new Error('Error fetching activities');
-                const activities = await response.json();
-                if (activities.length === 0) break;
+        const results = await Promise.allSettled(fetchPromises);
+        const successfulResults = results
+            .filter(result => result.status === 'fulfilled')
+            .map(result => result.value);
 
-                allActivities = allActivities.concat(activities);
-                page++;
-            }
+        const allActivities = successfulResults.flat();
 
-            contributionsCountElement.textContent = `${allActivities.length} contributions in the last year`;
-            populateFitnessGraph(allActivities);
-            generateActivityKey();
-        } catch (error) {
-            console.error('Error fetching activities:', error);
-        }
+        contributionsCountElement.textContent = `${allActivities.length} contributions in the last year`;
+        populateFitnessGraph(allActivities);
+        generateActivityKey();
+    } catch (error) {
+        console.error('Error fetching Strava activities:', error);
     }
+}
+
 
     // Refresh access token
     async function refreshAccessToken() {
