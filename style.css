@@ -8,7 +8,7 @@ body {
     font-family: 'Palatino', serif; /* Classic serif font */
     line-height: 1.8;
     color: #333; /* Default dark text color */
-    background-color: #f8f8f8; /* Neutral page background */
+    background-color: #ffffff; /* Neutral page background */
 }
 
 
@@ -168,9 +168,7 @@ h2 {
     color: #000000;
     margin-bottom: 10px;
 }
-.content-wrapper.black .contributions-summary {
-    color: #ffffff; /* White text for black background */
-}
+
 
 /* 
     Tracker Wrapper 
