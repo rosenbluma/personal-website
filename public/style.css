@@ -237,13 +237,16 @@ h2 {
     Ensures everything scales well on smaller screens.
 */
 @media screen and (max-width: 768px) {
+
+    html, body {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+
     .content-wrapper {
-        padding: 10px; /* Reduce padding */
-        transform: scale(0.7); /* Scale down to 70% */
-        transform-origin: top center; /* Scale from the top center */
-        margin: 0 auto; /* Center horizontally */
-        margin-top: 10px; /* Position at the very top of the screen */
-        position: relative; /* Maintain positioning context */
+        top: 10px; /* Still 10px from the top */
+        bottom: 10px; /* Still 10px from the bottom */
+        max-width: 90%; /* Slightly narrower for small screens */
     }
 
     #theme-grid {
