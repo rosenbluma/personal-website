@@ -239,23 +239,72 @@ h2 {
 @media screen and (max-width: 768px) {
     .content-wrapper {
         padding: 10px; /* Reduce padding */
+        transform: scale(0.7); /* Scale down to 70% */
+        transform-origin: top center; /* Scale from the top center */
+        margin: 0 auto; /* Center horizontally */
+        margin-top: 10px; /* Position at the very top of the screen */
+        position: relative; /* Maintain positioning context */
     }
+
     #theme-grid {
         top: 10px;
         left: 10px; /* Adjust positioning */
     }
+
     .doodle-overlay {
-        top: -10%;
-        left: -15%;
-        width: 25%; /* Scale doodle appropriately */
+        position: fixed; /* Keep it in a fixed location relative to the viewport */
+        width: 100%; /* Adjust doodle size */
+        transform: scale(0.6); /* Scale down to 70% */
+        top: 740px;
+        left: -170px;
+        z-index: 100; /* Ensure it's above other content */
     }
+
     .tracker {
-        grid-template-columns: repeat(53, 10px); /* Adjust pixel size */
-        grid-template-rows: repeat(7, 10px);
+        transform: scale(0.5); /* Reduce to 50% of its size */
+        transform-origin: center; /* Scale from the center */
+        margin: 0 auto; /* Center the grid */
     }
+
+    .tracker-wrapper {
+        display: flex; /* Use flexbox for centering */
+        justify-content: center; /* Horizontally center the grid */
+        align-items: center; /* Vertically center the grid if needed */
+        margin: 10px auto; /* Add spacing above and below */
+    }
+
     .tracker .day,
     .tracker .label {
         width: 9px;
         height: 9px;
+    }
+
+    #activity-key {
+        display: flex; /* Switch to a horizontal layout */
+        flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+        justify-content: center; /* Center align the key items */
+        align-items: center; /* Center vertically for consistency */
+        gap: 10px; /* Add spacing between key items */
+        margin-top: 10px; /* Space above the key */
+        padding: 5px; /* Reduce padding */
+        font-size: 0.8rem; /* Scale down text size */
+        width: auto; /* Allow dynamic width */
+        max-width: 50%; /* NEW: Limit the key's width to force wrapping */
+        position: static; /* Remove absolute positioning */
+        margin: 0 auto;
+    }
+    
+
+    .key-item {
+        flex: 0 0 auto; /* Prevent items from shrinking */
+        display: flex; /* Maintain layout for each key item */
+        align-items: center; /* Center items vertically */
+        
+    }
+
+    .key-color {
+        width: 8px; /* Reduce the size of the color box */
+        height: 8px;
+        margin-right: 5px; /* Adjust spacing to match new size */
     }
 }
