@@ -81,34 +81,54 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateFitnessGraph(activities) {
         console.log(`Populating graph with ${activities.length} activities`);
         const dayMap = {};
-
+    
+        // Organize activities by date
         activities.forEach(activity => {
             const date = new Date(activity.start_date).toISOString().split('T')[0];
             const color = activityColors[activity.sport_type || 'unknown'] || '#d3d3d3';
             const name = activity.name || 'Unnamed Activity';
             const duration = `${Math.floor(activity.moving_time / 60)} min`;
-
+    
             if (!dayMap[date]) dayMap[date] = [];
             dayMap[date].push({ color, name, duration });
         });
-
+    
         const dayCells = tracker.querySelectorAll('.day');
         let currentDate = new Date();
+    
         for (let col = 0; col < totalWeeks; col++) {
             for (let row = 0; row < daysPerWeek; row++) {
                 const cell = dayCells[row * totalWeeks + col];
                 const dateString = currentDate.toISOString().split('T')[0];
-
+    
                 if (dayMap[dateString]) {
-                    const { color, name, duration } = dayMap[dateString][0];
-                    cell.style.backgroundColor = color;
-                    cell.setAttribute('title', `${name} - ${duration}`);
+                    const activitiesForDay = dayMap[dateString];
+                    const activityCount = activitiesForDay.length;
+    
+                    if (activityCount === 1) {
+                        // Single activity: use full cell color
+                        const { color, name, duration } = activitiesForDay[0];
+                        cell.style.backgroundColor = color;
+                        cell.setAttribute('title', `${name} - ${duration}`);
+                    } else if (activityCount >= 2) {
+                        // Multiple activities: split the cell
+                        const { color: color1, name: name1, duration: duration1 } = activitiesForDay[0];
+                        const { color: color2, name: name2, duration: duration2 } = activitiesForDay[1];
+    
+                        // Create a gradient for two activities
+                        cell.style.background = `linear-gradient(to right, ${color1} 50%, ${color2} 50%)`;
+                        cell.setAttribute(
+                            'title',
+                            `${name1} - ${duration1} + ${name2} - ${duration2}`
+                        );
+                    }
                 }
-
+    
                 currentDate.setDate(currentDate.getDate() - 1);
             }
         }
     }
+    
 
     function generateActivityKey() {
         console.log('Generating activity key...');
@@ -137,52 +157,74 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     async function fetchStravaActivities() {
-        const oneYearAgo = Math.floor(Date.now() / 1000) - 365 * 24 * 60 * 60;
+        const cacheKey = 'stravaActivities';
+        const cacheTimestampKey = 'stravaCacheTimestamp';
+        const cacheExpiration = 60 * 60 * 1000; // 1 hour in milliseconds
+        const currentTime = Date.now();
+        
+        const oneYearAgoTimestamp = Date.now() - 365 * 24 * 60 * 60 * 1000; // Timestamp for 1 year ago
+        
+        // Check cache
+        const cachedActivities = JSON.parse(localStorage.getItem(cacheKey));
+        const cacheTimestamp = localStorage.getItem(cacheTimestampKey);
+        
+        if (cachedActivities && cacheTimestamp && currentTime - cacheTimestamp < cacheExpiration) {
+            console.log('Using cached activities');
+            populateFitnessGraph(cachedActivities);
+            generateActivityKey();
+            updateContributionsCount(cachedActivities, oneYearAgoTimestamp);
+            return;
+        }
+        
+        console.log('Fetching new activities from API');
+        const oneYearAgo = Math.floor(oneYearAgoTimestamp / 1000); // Convert to seconds for the API
         const perPage = 200;
-        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-        const allActivities = [];
-    
+        
         try {
-            for (let page = 1; page <= 5; page++) {
-                console.log(`Fetching page ${page}...`);
-                const response = await fetch(
-                    `https://www.strava.com/api/v3/athlete/activities?page=${page}&per_page=${perPage}&after=${oneYearAgo}`,
+            // Fetch two pages of activities simultaneously
+            const [page1, page2] = await Promise.all([
+                fetch(
+                    `https://www.strava.com/api/v3/athlete/activities?page=1&per_page=${perPage}&after=${oneYearAgo}`,
                     { headers: { Authorization: `Bearer ${accessToken}` } }
-                );
-    
-                const rateLimit = response.headers.get("X-Ratelimit-Limit");
-                const rateUsage = response.headers.get("X-Ratelimit-Usage");
-                const readLimit = response.headers.get("X-ReadRatelimit-Limit");
-                const readUsage = response.headers.get("X-ReadRatelimit-Usage");
-    
-                console.log(`Rate Limit: ${rateLimit}, Usage: ${rateUsage}`);
-                console.log(`Read Limit: ${readLimit}, Read Usage: ${readUsage}`);
-    
-                if (response.status === 429) {
-                    console.warn("Rate limit hit. Waiting until reset...");
-                    await delay(15 * 60 * 1000); // Wait for 15 minutes
-                    page--; // Retry the current page
-                    continue;
-                }
-    
-                if (!response.ok) {
-                    throw new Error(`Error fetching page ${page}: ${response.status} ${response.statusText}`);
-                }
-    
-                const data = await response.json();
-                allActivities.push(...data);
-    
-                if (data.length < perPage) break; // Stop if fewer results than expected
-                await delay(1000); // Delay between requests to avoid hitting limits
+                ),
+                fetch(
+                    `https://www.strava.com/api/v3/athlete/activities?page=2&per_page=${perPage}&after=${oneYearAgo}`,
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                )
+            ]);
+        
+            if (!page1.ok || !page2.ok) {
+                throw new Error('Error fetching activities');
             }
-    
+        
+            const activities1 = await page1.json();
+            const activities2 = await page2.json();
+        
+            // Combine results and update cache
+            const allActivities = [...activities1, ...activities2];
+            localStorage.setItem(cacheKey, JSON.stringify(allActivities));
+            localStorage.setItem(cacheTimestampKey, currentTime);
+        
             console.log(`Fetched ${allActivities.length} activities`);
             populateFitnessGraph(allActivities);
             generateActivityKey();
+            updateContributionsCount(allActivities, oneYearAgoTimestamp);
         } catch (error) {
-            console.error("Error fetching activities:", error);
+            console.error('Error fetching activities:', error);
         }
     }
+    
+    // Function to update contributions count
+    function updateContributionsCount(activities, oneYearAgoTimestamp) {
+        const activityCount = activities.filter(activity => {
+            const activityDate = new Date(activity.start_date).getTime();
+            return activityDate >= oneYearAgoTimestamp;
+        }).length;
+    
+        console.log(`Total activities in the last year: ${activityCount}`);
+        contributionsCountElement.textContent = `${activityCount} workouts in the last year`;
+    }
+    
     
 
     // Refresh Token Logic
