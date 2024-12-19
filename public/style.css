@@ -236,6 +236,22 @@ h2 {
     -----------------------
     Ensures everything scales well on smaller screens.
 */
+/* 
+    iPad-Specific Styling 
+    ----------------------
+    Center the container and add a 10px margin on the left and right.
+*/
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .container {
+        margin: 0 12px; /* Add 10px margin on left and right */
+        max-width: calc(100% - 20px); /* Account for the added margins */
+        box-sizing: border-box; /* Ensure padding does not affect width */
+    }
+    .doodle-overlay {
+        display: none; /* Hide the doodle overlay */
+    }
+
+}
 @media screen and (max-width: 768px) {
 
     html, body {
@@ -310,4 +326,18 @@ h2 {
         height: 8px;
         margin-right: 5px; /* Adjust spacing to match new size */
     }
+    
+    @media screen and (max-width: 480px) {
+        .tracker {
+            transform: scale(0.42); /* Reduce grid size to 70% */
+            transform-origin: center; /* Ensure scaling happens from the center */
+            margin: 0 auto; /* Center the grid */
+        }
+    
+        #activity-key {
+            transform: scale(0.66); /* Reduce the activity key size moderately to 85% */
+            transform-origin: center; /* Scale from the center */
+        }
+    }
 }
+
