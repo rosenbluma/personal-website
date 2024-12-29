@@ -77,57 +77,66 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Populate Fitness Graph
-    function populateFitnessGraph(activities) {
-        console.log(`Populating graph with ${activities.length} activities`);
-        const dayMap = {};
-    
-        // Organize activities by date
-        activities.forEach(activity => {
-            const date = new Date(activity.start_date).toISOString().split('T')[0];
-            const color = activityColors[activity.sport_type || 'unknown'] || '#d3d3d3';
-            const name = activity.name || 'Unnamed Activity';
-            const duration = `${Math.floor(activity.moving_time / 60)} min`;
-    
-            if (!dayMap[date]) dayMap[date] = [];
-            dayMap[date].push({ color, name, duration });
-        });
-    
-        const dayCells = tracker.querySelectorAll('.day');
-        let currentDate = new Date();
-    
-        for (let col = 0; col < totalWeeks; col++) {
-            for (let row = 0; row < daysPerWeek; row++) {
-                const cell = dayCells[row * totalWeeks + col];
-                const dateString = currentDate.toISOString().split('T')[0];
-    
-                if (dayMap[dateString]) {
-                    const activitiesForDay = dayMap[dateString];
-                    const activityCount = activitiesForDay.length;
-    
-                    if (activityCount === 1) {
-                        // Single activity: use full cell color
-                        const { color, name, duration } = activitiesForDay[0];
-                        cell.style.backgroundColor = color;
-                        cell.setAttribute('title', `${name} - ${duration}`);
-                    } else if (activityCount >= 2) {
-                        // Multiple activities: split the cell
-                        const { color: color1, name: name1, duration: duration1 } = activitiesForDay[0];
-                        const { color: color2, name: name2, duration: duration2 } = activitiesForDay[1];
-    
-                        // Create a gradient for two activities
-                        cell.style.background = `linear-gradient(to right, ${color1} 50%, ${color2} 50%)`;
-                        cell.setAttribute(
-                            'title',
-                            `${name1} - ${duration1} + ${name2} - ${duration2}`
-                        );
-                    }
+    // Helper function to convert UTC date to PST
+function convertToPST(utcDate) {
+    const date = new Date(utcDate);
+    // Adjusting UTC offset to PST (UTC-8 or UTC-7 during daylight saving)
+    const offsetInMinutes = date.getTimezoneOffset() + 480; // 480 minutes = 8 hours
+    return new Date(date.getTime() - offsetInMinutes * 60 * 1000);
+}
+
+// Updated populateFitnessGraph to use PST
+function populateFitnessGraph(activities) {
+    console.log(`Populating graph with ${activities.length} activities`);
+    const dayMap = {};
+
+    // Organize activities by PST-adjusted date
+    activities.forEach(activity => {
+        const pstDate = convertToPST(activity.start_date);
+        const date = pstDate.toISOString().split('T')[0]; // Extract YYYY-MM-DD in PST
+        const color = activityColors[activity.sport_type || 'unknown'] || '#d3d3d3';
+        const name = activity.name || 'Unnamed Activity';
+        const duration = `${Math.floor(activity.moving_time / 60)} min`;
+
+        if (!dayMap[date]) dayMap[date] = [];
+        dayMap[date].push({ color, name, duration });
+    });
+
+    const dayCells = tracker.querySelectorAll('.day');
+    let currentDate = new Date();
+
+    for (let col = 0; col < totalWeeks; col++) {
+        for (let row = 0; row < daysPerWeek; row++) {
+            const cell = dayCells[row * totalWeeks + col];
+            const pstDate = convertToPST(currentDate);
+            const currentDateString = pstDate.toISOString().split('T')[0];
+
+            if (dayMap[currentDateString]) {
+                const activitiesForDay = dayMap[currentDateString];
+                const activityCount = activitiesForDay.length;
+
+                if (activityCount === 1) {
+                    const { color, name, duration } = activitiesForDay[0];
+                    cell.style.backgroundColor = color;
+                    cell.setAttribute('title', `${name} - ${duration}`);
+                } else if (activityCount >= 2) {
+                    const gradients = activitiesForDay.map(
+                        ({ color }, idx, arr) =>
+                            `${color} ${(idx / arr.length) * 100}%, ${color} ${((idx + 1) / arr.length) * 100}%`
+                    );
+                    cell.style.background = `linear-gradient(to right, ${gradients.join(', ')})`;
+                    const tooltip = activitiesForDay
+                        .map(({ name, duration }) => `${name} - ${duration}`)
+                        .join(' + ');
+                    cell.setAttribute('title', tooltip);
                 }
-    
-                currentDate.setDate(currentDate.getDate() - 1);
             }
+
+            currentDate.setDate(currentDate.getDate() - 1);
         }
     }
+}
+    
     
 
     function generateActivityKey() {
