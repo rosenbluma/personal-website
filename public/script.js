@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
         Hike: '#8B0000',
         Surfing: '#4169E1',
         Workout: '#9370DB',
+        Walk: '#0066f2', // Added Walking
+        Snowboarding: '#B0E0E6' // Added Snowboarding
     };
 
     const activityDisplayNames = {
@@ -35,6 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         Hike: 'Hiking',
         Surfing: 'Surfing',
         Workout: 'Ultimate',
+        Walk: 'Walking', // Added Walking
+        Snowboarding: 'Snowboarding' // Added Snowboarding
     };
 
     // Theme Management
@@ -77,81 +81,73 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Helper function to convert UTC date to PST
-function convertToPST(utcDate) {
-    const date = new Date(utcDate);
-    // Adjusting UTC offset to PST (UTC-8 or UTC-7 during daylight saving)
-    const offsetInMinutes = date.getTimezoneOffset() + 480; // 480 minutes = 8 hours
-    return new Date(date.getTime() - offsetInMinutes * 60 * 1000);
-}
+    function convertToPST(utcDate) {
+        const date = new Date(utcDate);
+        const offsetInMinutes = date.getTimezoneOffset() + 480; // 480 minutes = 8 hours
+        return new Date(date.getTime() - offsetInMinutes * 60 * 1000);
+    }
 
-// Updated populateFitnessGraph to use PST
-function populateFitnessGraph(activities) {
-    console.log(`Populating graph with ${activities.length} activities`);
-    const dayMap = {};
+    function populateFitnessGraph(activities) {
+        console.log(`Populating graph with ${activities.length} activities`);
+        const dayMap = {};
 
-    // Organize activities by PST-adjusted date
-    activities.forEach(activity => {
-        const pstDate = convertToPST(activity.start_date);
-        const date = pstDate.toISOString().split('T')[0]; // Extract YYYY-MM-DD in PST
-        const color = activityColors[activity.sport_type || 'unknown'] || '#d3d3d3';
-        const name = activity.name || 'Unnamed Activity';
-        const duration = `${Math.floor(activity.moving_time / 60)} min`;
+        activities.forEach(activity => {
+            const pstDate = convertToPST(activity.start_date);
+            const date = pstDate.toISOString().split('T')[0];
+            const color = activityColors[activity.sport_type || 'unknown'] || '#d3d3d3';
+            const name = activity.name || 'Unnamed Activity';
+            const duration = `${Math.floor(activity.moving_time / 60)} min`;
 
-        if (!dayMap[date]) dayMap[date] = [];
-        dayMap[date].push({ color, name, duration });
-    });
+            if (!dayMap[date]) dayMap[date] = [];
+            dayMap[date].push({ color, name, duration });
+        });
 
-    const dayCells = tracker.querySelectorAll('.day');
-    let currentDate = new Date();
+        const dayCells = tracker.querySelectorAll('.day');
+        let currentDate = new Date();
 
-    for (let col = 0; col < totalWeeks; col++) {
-        for (let row = 0; row < daysPerWeek; row++) {
-            const cell = dayCells[row * totalWeeks + col];
-            const pstDate = convertToPST(currentDate);
-            const currentDateString = pstDate.toISOString().split('T')[0];
+        for (let col = 0; col < totalWeeks; col++) {
+            for (let row = 0; row < daysPerWeek; row++) {
+                const cell = dayCells[row * totalWeeks + col];
+                const pstDate = convertToPST(currentDate);
+                const currentDateString = pstDate.toISOString().split('T')[0];
 
-            if (dayMap[currentDateString]) {
-                const activitiesForDay = dayMap[currentDateString];
-                const activityCount = activitiesForDay.length;
+                if (dayMap[currentDateString]) {
+                    const activitiesForDay = dayMap[currentDateString];
+                    const activityCount = activitiesForDay.length;
 
-                if (activityCount === 1) {
-                    const { color, name, duration } = activitiesForDay[0];
-                    cell.style.backgroundColor = color;
-                    cell.setAttribute('title', `${name} - ${duration}`);
-                } else if (activityCount >= 2) {
-                    const gradients = activitiesForDay.map(
-                        ({ color }, idx, arr) =>
-                            `${color} ${(idx / arr.length) * 100}%, ${color} ${((idx + 1) / arr.length) * 100}%`
-                    );
-                    cell.style.background = `linear-gradient(to right, ${gradients.join(', ')})`;
-                    const tooltip = activitiesForDay
-                        .map(({ name, duration }) => `${name} - ${duration}`)
-                        .join(' + ');
-                    cell.setAttribute('title', tooltip);
+                    if (activityCount === 1) {
+                        const { color, name, duration } = activitiesForDay[0];
+                        cell.style.backgroundColor = color;
+                        cell.setAttribute('title', `${name} - ${duration}`);
+                    } else if (activityCount >= 2) {
+                        const gradients = activitiesForDay.map(
+                            ({ color }, idx, arr) =>
+                                `${color} ${(idx / arr.length) * 100}%, ${color} ${((idx + 1) / arr.length) * 100}%`
+                        );
+                        cell.style.background = `linear-gradient(to right, ${gradients.join(', ')})`;
+                        const tooltip = activitiesForDay
+                            .map(({ name, duration }) => `${name} - ${duration}`)
+                            .join(' + ');
+                        cell.setAttribute('title', tooltip);
+                    }
                 }
-            }
 
-            currentDate.setDate(currentDate.getDate() - 1);
+                currentDate.setDate(currentDate.getDate() - 1);
+            }
         }
     }
-}
-    
-    
 
     function generateActivityKey() {
         console.log('Generating activity key...');
-    
-        // Check if activity key container exists
         if (!activityKeyContainer) {
             console.error('Error: activityKeyContainer not found in DOM.');
             return;
         }
-    
-        activityKeyContainer.innerHTML = ''; // Clear any previous content
+
+        activityKeyContainer.innerHTML = '';
         Object.entries(activityColors).forEach(([activity, color]) => {
             console.log('Adding key for:', activity, color);
-    
+
             const keyItem = document.createElement('div');
             keyItem.classList.add('key-item');
             keyItem.innerHTML = `
@@ -160,23 +156,20 @@ function populateFitnessGraph(activities) {
             `;
             activityKeyContainer.appendChild(keyItem);
         });
-    
+
         console.log('Activity key generated successfully!');
     }
-    
 
     async function fetchStravaActivities() {
         const cacheKey = 'stravaActivities';
         const cacheTimestampKey = 'stravaCacheTimestamp';
-        const cacheExpiration = 60 * 60 * 1000; // 1 hour in milliseconds
+        const cacheExpiration = 60 * 60 * 1000;
         const currentTime = Date.now();
-        
-        const oneYearAgoTimestamp = Date.now() - 365 * 24 * 60 * 60 * 1000; // Timestamp for 1 year ago
-        
-        // Check cache
+        const oneYearAgoTimestamp = Date.now() - 365 * 24 * 60 * 60 * 1000;
+
         const cachedActivities = JSON.parse(localStorage.getItem(cacheKey));
         const cacheTimestamp = localStorage.getItem(cacheTimestampKey);
-        
+
         if (cachedActivities && cacheTimestamp && currentTime - cacheTimestamp < cacheExpiration) {
             console.log('Using cached activities');
             populateFitnessGraph(cachedActivities);
@@ -184,13 +177,12 @@ function populateFitnessGraph(activities) {
             updateContributionsCount(cachedActivities, oneYearAgoTimestamp);
             return;
         }
-        
+
         console.log('Fetching new activities from API');
-        const oneYearAgo = Math.floor(oneYearAgoTimestamp / 1000); // Convert to seconds for the API
+        const oneYearAgo = Math.floor(oneYearAgoTimestamp / 1000);
         const perPage = 200;
-        
+
         try {
-            // Fetch two pages of activities simultaneously
             const [page1, page2] = await Promise.all([
                 fetch(
                     `https://www.strava.com/api/v3/athlete/activities?page=1&per_page=${perPage}&after=${oneYearAgo}`,
@@ -201,19 +193,18 @@ function populateFitnessGraph(activities) {
                     { headers: { Authorization: `Bearer ${accessToken}` } }
                 )
             ]);
-        
+
             if (!page1.ok || !page2.ok) {
                 throw new Error('Error fetching activities');
             }
-        
+
             const activities1 = await page1.json();
             const activities2 = await page2.json();
-        
-            // Combine results and update cache
+
             const allActivities = [...activities1, ...activities2];
             localStorage.setItem(cacheKey, JSON.stringify(allActivities));
             localStorage.setItem(cacheTimestampKey, currentTime);
-        
+
             console.log(`Fetched ${allActivities.length} activities`);
             populateFitnessGraph(allActivities);
             generateActivityKey();
@@ -222,21 +213,17 @@ function populateFitnessGraph(activities) {
             console.error('Error fetching activities:', error);
         }
     }
-    
-    // Function to update contributions count
+
     function updateContributionsCount(activities, oneYearAgoTimestamp) {
         const activityCount = activities.filter(activity => {
             const activityDate = new Date(activity.start_date).getTime();
             return activityDate >= oneYearAgoTimestamp;
         }).length;
-    
+
         console.log(`Total activities in the last year: ${activityCount}`);
         contributionsCountElement.textContent = `${activityCount} workouts in the last year`;
     }
-    
-    
 
-    // Refresh Token Logic
     async function refreshAccessToken() {
         console.log('Refreshing access token...');
         const response = await fetch('https://www.strava.com/oauth/token', {
@@ -259,13 +246,12 @@ function populateFitnessGraph(activities) {
         console.log('Token refreshed:', data);
     }
 
-    // Main Execution
     async function main() {
         if (Date.now() / 1000 >= tokenExpiresAt) {
             await refreshAccessToken();
         }
         initializeGrid();
-        generateActivityKey(); // Force the activity key generation
+        generateActivityKey();
         await fetchStravaActivities();
     }
 
