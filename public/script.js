@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const contributionsCountElement = document.querySelector('.contributions-count');
     const themeNodes = document.querySelectorAll('.theme-node');
     const contentWrapper = document.querySelector('.content-wrapper');
-    const activityKeyContainer = document.getElementById('activity-key'); // For activity key
+    const activityKeyContainer = document.getElementById('activity-key'); 
 
     const clientId = '142816';
     const clientSecret = '3af96ad67eaabcb268b8dd0a8cd4623ce0b00646';
@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
         Hike: '#8B0000',
         Surfing: '#4169E1',
         Workout: '#9370DB',
-        Walk: '#0066f2', // Added Walking
-        Snowboarding: '#B0E0E6' // Added Snowboarding
+        Walk: '#0066f2', //
+        Snowboard: '#B0E0E6' // 
     };
 
     const activityDisplayNames = {
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Surfing: 'Surfing',
         Workout: 'Ultimate',
         Walk: 'Walking', // Added Walking
-        Snowboarding: 'Snowboarding' // Added Snowboarding
+        Snowboard: 'Snowboarding'
     };
 
     // Theme Management
